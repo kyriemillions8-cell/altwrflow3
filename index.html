@@ -1,304 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AltarFlow Elite | Pro Scripture Suite</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AltarFlow Elite | Sovereign Edition 2026</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #007AFF;
+            --accent: #ffd700;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --gold: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --text: #ffffff;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-<style>
-:root {
-  --primary: #1f80ff;
-  --accent: #ffd700;
-  --bg: #0a0a0c;
-  --glass: rgba(255, 255, 255, 0.08);
-}
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
 
-*{ margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+        /* --- Sovereign UI Components --- */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 35px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
 
-body{
-  background: radial-gradient(circle at top, #1a1a2e, #000);
-  color:#fff;
-  min-height: 100vh;
-}
+        .search-box { display: flex; gap: 12px; margin-bottom: 20px; }
+        input, select {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border);
+            color: white; padding: 18px; border-radius: 18px; font-size: 1rem; outline: none;
+        }
+        input { flex: 1; }
 
-.container{ max-width:700px; margin:auto; padding:20px; padding-bottom: 80px; }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        button {
+            padding: 14px; border: none; border-radius: 15px;
+            background: var(--glass); color: white; font-weight: 600;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        button:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+        .btn-gold { background: var(--gold); color: #000; }
 
-h1{ text-align:center; font-weight: 700; letter-spacing: -1px; margin-bottom: 5px; }
-.subtitle { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-bottom: 25px; }
+        /* --- Display Engine --- */
+        #display-area { text-align: center; padding: 40px 0; }
+        .v-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            line-height: 1.2; margin-bottom: 20px; font-weight: 700;
+        }
+        .v-ref { color: var(--primary); font-weight: 800; letter-spacing: 4px; text-transform: uppercase; }
 
-.card{
-  background: var(--glass);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 24px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
+        /* --- THEOLOGICAL INSIGHT PANEL --- */
+        .insight-panel {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(0, 122, 255, 0.1);
+            border-left: 5px solid var(--primary);
+            text-align: left;
+            animation: fadeIn 0.5s ease;
+        }
+        .insight-title { color: var(--accent); font-weight: 800; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; }
+        .lexicon-box { font-family: serif; font-style: italic; color: #aaa; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
 
-.inputRow{ display:flex; gap:10px; margin-bottom: 15px; }
+        /* --- Overlays --- */
+        #broadcast-layer { position: fixed; bottom: 40px; width: 94%; left: 3%; display: none; z-index: 9999; }
+        .lt-box { background: rgba(0,0,0,0.95); border-left: 10px solid var(--primary); padding: 30px; border-radius: 8px; }
 
-input, select{
-  background: rgba(0,0,0,0.3);
-  color: white;
-  padding:14px;
-  border-radius:12px;
-  border: 1px solid rgba(255,255,255,0.1);
-  outline:none;
-}
-input { flex: 2; }
-select { flex: 0.5; cursor: pointer; }
+        footer { text-align: center; margin-top: 80px; opacity: 0.4; font-size: 0.75rem; border-top: 1px solid var(--border); padding-top: 20px; }
+        .signature { font-style: italic; margin-top: 5px; color: var(--primary); }
 
-.actions{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-button{
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background: var(--glass);
-  color:white;
-  font-weight: 500;
-  cursor:pointer;
-  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-button.primary { background: linear-gradient(135deg, var(--primary), #004cff); }
-button:hover{ transform: translateY(-3px); background: rgba(255,255,255,0.15); }
-
-/* VERSE DISPLAY */
-#verseDisplay{
-  margin-top: 20px;
-  min-height: 100px;
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  line-height: 1.5;
-  opacity: 0;
-  transition: .4s ease;
-}
-
-.show { opacity: 1 !important; }
-
-/* LOWER THIRD MODE */
-.lower-third {
-  position: fixed;
-  bottom: 40px;
-  left: 5%;
-  right: 5%;
-  background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
-  border-left: 6px solid var(--primary);
-  padding: 20px;
-  z-index: 1000;
-  animation: slideIn 0.5s ease;
-}
-
-/* FULLSCREEN OVERLAY */
-.fullscreen-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: #000;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  z-index: 2000; text-align: center; padding: 40px;
-}
-
-.list-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.list-container button { font-size: 12px; padding: 6px 12px; border-radius: 20px; }
-
-footer {
-  text-align: center;
-  margin-top: 40px;
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-.credits { font-size: 10px; font-style: italic; margin-top: 5px; }
-
-@keyframes slideIn { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-</style>
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>AltarFlow <span style="color:var(--primary)">Elite</span></h1>
-  <p class="subtitle">Dynamic Scripture Projection Engine</p>
+    <div class="container">
+        <header style="text-align:center; margin-bottom: 40px;">
+            <h1 style="font-weight:900; font-size:3rem; letter-spacing:-2px;">AltarFlow <span style="color:var(--primary)">Elite</span></h1>
+            <p style="opacity:0.6; letter-spacing:3px; font-size:0.7rem;">SOVEREIGN THEOLOGICAL INTELLIGENCE</p>
+        </header>
 
-  <div class="card">
-    <div class="inputRow">
-      <input id="verseInput" placeholder="Enter verse or keywords...">
-      <select id="version">
-        <option value="kjv">KJV</option>
-        <option value="web">WEB</option>
-        <option value="bbe">BBE</option>
-      </select>
+        <div class="glass">
+            <div class="search-box">
+                <input type="text" id="mainInput" placeholder="Enter Reference or Phrase (e.g. 'In the beginning was the word')..." onkeypress="checkEnter(event)">
+                <select id="versionSelect">
+                    <option value="kjv">KJV</option>
+                    <option value="asv">ASV</option>
+                    <option value="web">WEB</option>
+                </select>
+            </div>
+
+            <div class="controls">
+                <button class="btn-gold" onclick="fetchVerse()">⚡ Reveal</button>
+                <button onclick="startVoice()">🎤 Voice</button>
+                <button onclick="toggleInsight()">📖 Interpretation</button>
+                <button onclick="toggleLT()">📺 Broadcast</button>
+                <button onclick="toggleFS()">🖼 Fullscreen</button>
+                <button onclick="copyVerse()">📋 Copy</button>
+            </div>
+
+            <div id="display-area">
+                <div id="vText" class="v-text">Behold, I make all things new.</div>
+                <div id="vRef" class="v-ref">AltarFlow Sovereign 2026</div>
+
+                <div id="insightPanel" class="insight-panel">
+                    <div class="insight-title">✨ Divine Insight & Interpretation</div>
+                    <div id="interpretationContent">Searching the spiritual context...</div>
+                    <div class="lexicon-box" id="lexiconContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2026 BODY OF CHRIST INTL | SOVEREIGN JURISDICTION
+            <div class="signature">Architect: Kyrie Chirombedzi</div>
+        </footer>
     </div>
 
-    <div class="actions">
-      <button class="primary" onclick="getVerse()">Display</button>
-      <button onclick="startVoice()">🎤 Listen</button>
-      <button onclick="toggleLowerThird()">📺 Lower Third</button>
-      <button onclick="copyVerse()">📋 Copy</button>
-      <button onclick="addFav()">⭐ Favorite</button>
-      <button onclick="toggleFS()">🖼 Fullscreen</button>
+    <div id="broadcast-layer"></div>
+    <div id="fs-layer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:10000; flex-direction:column; justify-content:center; align-items:center; padding:60px; text-align:center;">
+        <div id="fsText" class="v-text" style="font-size:3.5rem;"></div>
+        <div id="fsRef" class="v-ref" style="font-size:1.5rem;"></div>
+        <button onclick="toggleFS()" style="position:fixed; top:40px; right:40px; background:white; color:black;">EXIT</button>
     </div>
 
-    <div id="verseDisplay">Seek and ye shall find...</div>
-  </div>
+    <script>
+        let currentVerse = { text: "", ref: "", interpretation: "", lexicon: "" };
 
-  <div class="card">
-    <h3>Quick Access</h3>
-    <div id="favorites" class="list-container"></div>
-    <hr style="margin:15px 0; opacity:0.1">
-    <h3>Recent</h3>
-    <div id="history" class="list-container"></div>
-  </div>
+        // 1. Core Theological Engine
+        async function fetchVerse() {
+            const query = document.getElementById('mainInput').value;
+            const version = document.getElementById('versionSelect').value;
+            if(!query) return;
 
-  <footer>
-    &copy; 2024 Made by Body of Christ Intl<br>
-    <div class="credits">Kyrie Chirombedzi</div>
-  </footer>
-</div>
+            document.getElementById('vText').innerText = "Consulting the Scrolls...";
+            
+            try {
+                // Primary Fetch
+                let res = await fetch(`https://bible-api.com/${query}?translation=${version}`);
+                let data = await res.json();
 
-<script>
-let currentText = "";
-let cache = JSON.parse(localStorage.getItem("cache")) || {};
-let history = JSON.parse(localStorage.getItem("history")) || [];
-let favs = JSON.parse(localStorage.getItem("favs")) || [];
+                if(!data.text) {
+                    // Search Fallback
+                    const sRes = await fetch(`https://bible-api.com/search?q=${encodeURIComponent(query)}`);
+                    const sData = await sRes.json();
+                    const top = sData.verses[0];
+                    const fRes = await fetch(`https://bible-api.com/${top.book_name}+${top.chapter}:${top.verse}?translation=${version}`);
+                    data = await fRes.json();
+                }
 
-async function getVerse(q) {
-  q = q || document.getElementById("verseInput").value;
-  let version = document.getElementById("version").value;
-  if(!q) return;
+                updateUI(data);
+            } catch (e) {
+                document.getElementById('vText').innerText = "Connection to the cloud interrupted.";
+            }
+        }
 
-  const display = document.getElementById("verseDisplay");
-  display.classList.remove("show");
+        function updateUI(data) {
+            currentVerse.text = data.text.trim();
+            currentVerse.ref = data.reference;
+            
+            document.getElementById('vText').innerText = `"${currentVerse.text}"`;
+            document.getElementById('vRef').innerText = currentVerse.ref;
 
-  try {
-    const res = await fetch(`https://bible-api.com/${q}?translation=${version}`);
-    const data = await res.json();
-    
-    if(data.text) {
-      currentText = `"${data.text.trim()}"\n\n— ${data.reference} (${version.toUpperCase()})`;
-      renderDisplay(currentText);
-      addHistory(data.reference);
-    } else {
-      // Fallback to search
-      const searchRes = await fetch(`https://bible-api.com/search?q=${encodeURIComponent(q)}`);
-      const searchData = await searchRes.json();
-      if(searchData.verses.length > 0) {
-        let v = searchData.verses[0];
-        currentText = `"${v.text.trim()}"\n\n— ${v.book_name} ${v.chapter}:${v.verse}`;
-        renderDisplay(currentText);
-      }
-    }
-  } catch (e) {
-    renderDisplay("Verse not found. Please check reference.");
-  }
-}
+            // Generate "Paid-Version" Style Interpretation
+            generateInterpretation(currentVerse.ref, currentVerse.text);
+        }
 
-function renderDisplay(text) {
-  const display = document.getElementById("verseDisplay");
-  display.innerText = text;
-  display.classList.add("show");
-  
-  // If lower third is active, update it
-  const lt = document.getElementById("lt-overlay");
-  if(lt) lt.innerText = text;
-}
+        // 2. The Interpretation Logic (The "Jesus is the Word" feature)
+        function generateInterpretation(ref, text) {
+            let interpretation = "This scripture emphasizes the divine nature of God's plan.";
+            let lexicon = "";
 
-function toggleLowerThird() {
-  let lt = document.getElementById("lt-overlay");
-  if(lt) {
-    lt.remove();
-  } else {
-    lt = document.createElement("div");
-    lt.id = "lt-overlay";
-    lt.className = "lower-third";
-    lt.innerText = currentText || "Waiting for verse...";
-    document.body.appendChild(lt);
-  }
-}
+            if(ref.includes("John 1:1")) {
+                interpretation = "The 'Word' used here is the Greek 'Logos'. This refers directly to Jesus Christ as the eternal, creative expression of God. To say the Word was with God is to confirm Jesus' pre-existence before creation.";
+                lexicon = "Greek: Λόγος (Logos) — The Divine Reason, the Mind of God expressed.";
+            } else if(ref.includes("Genesis 1:1")) {
+                interpretation = "Creation began by the spoken command of God. Hebrew scholars note that 'Elohim' is plural, hinting at the Trinity present at the very beginning.";
+                lexicon = "Hebrew: בְּרֵאשִׁית (Bereshit) — In the beginning / At the head of all things.";
+            } else if (text.toLowerCase().includes("love")) {
+                interpretation = "This verse highlights 'Agape'—unconditional, sacrificial love that acts regardless of feelings.";
+                lexicon = "Greek: ἀγάπη (Agape) — Highest form of love; charity.";
+            } else {
+                interpretation = "Standard Interpretation: This passage serves as a foundation for living a life of faith and alignment with the Creator's purpose.";
+                lexicon = "Study Note: Observe the verbs in this verse to understand the action God is requiring of the believer.";
+            }
 
-function toggleFS() {
-  let fs = document.getElementById("fs-overlay");
-  if(fs) {
-    fs.remove();
-  } else {
-    fs = document.createElement("div");
-    fs.id = "fs-overlay";
-    fs.className = "fullscreen-overlay";
-    fs.innerHTML = `<div style="font-size:3rem; font-family:'Playfair Display'">${currentText}</div>
-                    <button onclick="this.parentElement.remove()" style="position:absolute; top:20px; right:20px;">✕ Close</button>`;
-    document.body.appendChild(fs);
-  }
-}
+            document.getElementById('interpretationContent').innerText = interpretation;
+            document.getElementById('lexiconContent').innerText = lexicon;
+        }
 
-function copyVerse() {
-  if(!currentText) return;
-  navigator.clipboard.writeText(currentText);
-  alert("Copied to clipboard!");
-}
+        // 3. UI Controls
+        function toggleInsight() {
+            const panel = document.getElementById('insightPanel');
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        }
 
-function startVoice() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition) return alert("Speech not supported");
-  
-  let rec = new SpeechRecognition();
-  rec.onresult = (e) => {
-    let t = e.results[0][0].transcript;
-    document.getElementById("verseInput").value = t;
-    getVerse(t);
-  };
-  rec.start();
-}
+        function toggleLT() {
+            const layer = document.getElementById('broadcast-layer');
+            if(layer.style.display === 'block') { layer.style.display = 'none'; }
+            else {
+                layer.style.display = 'block';
+                layer.innerHTML = `<div class="lt-box"><h2>${currentVerse.text}</h2><p class="v-ref" style="margin-top:10px;">${currentVerse.ref}</p></div>`;
+            }
+        }
 
-function addHistory(ref) {
-  if(!history.includes(ref)) {
-    history.unshift(ref);
-    history = history.slice(0, 8);
-    localStorage.setItem("history", JSON.stringify(history));
-    renderLists();
-  }
-}
+        function toggleFS() {
+            const fs = document.getElementById('fs-layer');
+            if(fs.style.display === 'flex') { fs.style.display = 'none'; }
+            else {
+                fs.style.display = 'flex';
+                document.getElementById('fsText').innerText = `"${currentVerse.text}"`;
+                document.getElementById('fsRef').innerText = currentVerse.ref;
+            }
+        }
 
-function addFav() {
-  let ref = document.getElementById("verseInput").value;
-  if(ref && !favs.includes(ref)) {
-    favs.push(ref);
-    localStorage.setItem("favs", JSON.stringify(favs));
-    renderLists();
-  }
-}
+        function startVoice() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechRec) return alert("Voice recognition not supported.");
+            const rec = new SpeechRec();
+            rec.onresult = (e) => {
+                const t = e.results[0][0].transcript;
+                document.getElementById('mainInput').value = t;
+                fetchVerse();
+            };
+            rec.start();
+        }
 
-function renderLists() {
-  const hDiv = document.getElementById("history");
-  const fDiv = document.getElementById("favorites");
-  hDiv.innerHTML = ""; fDiv.innerHTML = "";
-  
-  history.forEach(v => {
-    let b = document.createElement("button");
-    b.innerText = v;
-    b.onclick = () => getVerse(v);
-    hDiv.appendChild(b);
-  });
+        function copyVerse() {
+            navigator.clipboard.writeText(`"${currentVerse.text}" — ${currentVerse.ref}`);
+            alert("Scripture & Reference Copied.");
+        }
 
-  favs.forEach(v => {
-    let b = document.createElement("button");
-    b.innerText = "⭐ " + v;
-    b.onclick = () => getVerse(v);
-    fDiv.appendChild(b);
-  });
-}
-
-renderLists();
-</script>
-
+        function checkEnter(e) { if(e.key === 'Enter') fetchVerse(); }
+    </script>
 </body>
 </html>
-
