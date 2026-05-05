@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AltarFlow Sovereign 2026</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --gold: linear-gradient(90deg, #d4af37, #f7ef8a, #d4af37);
+  --accent-blue: #1f80ff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body{
+  background: #0a0a0a;
+  color:#fff;
+  overflow-x: hidden;
+}
+
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:20px;
+}
+
+.brand-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.brand-header h1 {
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+
+.brand-header p {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* THE FAMOUS GOLD BUTTON */
+.reveal-btn {
+    width: 100%;
+    background: var(--gold);
+    color: #000;
+    font-weight: 700;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 100%;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+input, select {
+    width: 100%;
+    background: #111;
+    border: 1px solid #222;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#verseDisplay {
+    margin-top: 30px;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+}
+
+.main-verse {
+    font-size: 24px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.reference-text {
+    color: var(--accent-blue);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+/* DIVINE INSIGHT BOX */
+.insight-card {
+    background: linear-gradient(145deg, #0d1b2a, #000);
+    border-left: 3px solid var(--accent-blue);
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 25px;
+    text-align: left;
+    display: none;
+}
+
+.insight-header {
+    color: #f7ef8a;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* FULLSCREEN PRESENTATION */
+.fullscreen-layer {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.fs-nav {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.fs-nav button {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid #444;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.exit-btn {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: #fff;
+    color: #000;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 11px;
+    color: #444;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="brand-header">
+        <h1>AltarFlow <span style="color:var(--accent-blue)">Elite</span></h1>
+        <p>Sovereign Theological Intelligence</p>
+    </div>
+
+    <input id="vInput" placeholder="Enter Reference (e.g. John 3:16)" value="John 1:1">
+    
+    <select id="vVersion">
+        <option value="kjv">KJV</option>
+        <option value="web">WEB</option>
+    </select>
+
+    <button class="reveal-btn" onclick="fetchVerse()">⚡ Reveal</button>
+    <button class="action-btn" onclick="startVoice()">🎤 Voice</button>
+    <button class="action-btn" onclick="toggleInsight()">📖 Interpretation</button>
+    <button class="action-btn" onclick="enterFS()">🖼️ Fullscreen</button>
+    <button class="action-btn" onclick="copyVerse()">📋 Copy</button>
+
+    <div id="verseDisplay">
+        <div id="textOutput" class="main-verse">"Behold, I make all things new."</div>
+        <div id="refOutput" class="reference-text">ALTARFLOW SOVEREIGN 2026</div>
+        
+        <div id="insightBox" class="insight-card">
+            <div class="insight-header">✨ DIVINE INSIGHT & INTERPRETATION</div>
+            <div id="insightText" style="font-size: 14px; color: #ccc;">...</div>
+        </div>
+    </div>
+
+    <footer>
+        © 2026 BODY OF CHRIST INTL | SOVEREIGN JURISDICTION<br>
+        <span style="color:var(--accent-blue); font-style: italic;">Architect: Kyrie Chirombedzi</span>
+    </footer>
+</div>
+
+<div id="fsLayer" class="fullscreen-layer">
+    <div class="exit-btn" onclick="exitFS()">EXIT</div>
+    <div id="fsText" class="main-verse" style="font-size: 40px;"></div>
+    <div id="fsRef" class="reference-text" style="margin-top: 20px;"></div>
+    
+    <div class="fs-nav">
+        <button onclick="navVerse(-1)">◀ Previous</button>
+        <button onclick="navVerse(1)">Next ▶</button>
+    </div>
+</div>
+
+<script>
+let currentVerseData = null;
+
+async function fetchVerse(ref) {
+    const query = ref || document.getElementById('vInput').value;
+    const version = document.getElementById('vVersion').value;
+    
+    try {
+        const res = await fetch(`https://bible-api.com/${query}?translation=${version}`);
+        const data = await res.json();
+        
+        if(data.text) {
+            currentVerseData = data;
+            updateUI(data);
+            generateInsight(data);
+        }
+    } catch(e) {
+        document.getElementById('textOutput').innerText = "Connection Interrupted";
+    }
+}
+
+function updateUI(data) {
+    document.getElementById('textOutput').innerText = `"${data.text.trim()}"`;
+    document.getElementById('refOutput').innerText = data.reference;
+    
+    // Update FS if open
+    document.getElementById('fsText').innerText = `"${data.text.trim()}"`;
+    document.getElementById('fsRef').innerText = data.reference;
+}
+
+/* THE NEXT VERSE LOGIC */
+async function navVerse(direction) {
+    if(!currentVerseData) return;
+    let v = currentVerseData.verses[0];
+    let nextRef = `${v.book_name} ${v.chapter}:${v.verse + direction}`;
+    fetchVerse(nextRef);
+}
+
+/* DYNAMIC INTERPRETATION ENGINE */
+function generateInsight(data) {
+    const book = data.verses[0].book_name;
+    const text = data.text.toLowerCase();
+    let insight = "";
+
+    if(text.includes("beginning") || text.includes("made") || text.includes("created")) {
+        insight = "This passage reveals the Creative Authority of the Logos. It establishes that nothing exists outside of His intentional design.";
+    } else if (text.includes("love") || text.includes("loved")) {
+        insight = "A revelation of Divine Agape. This highlights the sacrificial nature of the Father toward His creation.";
+    } else {
+        insight = `Standard Interpretation: This passage in ${book} serves as a foundation for living a life of faith and alignment with the Creator's purpose.`;
+    }
+
+    document.getElementById('insightText').innerHTML = insight + `<br><br><i style="color:#888">Observe the context of ${book} to see the action God is requiring.</i>`;
+}
+
+function toggleInsight() {
+    const box = document.getElementById('insightBox');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function enterFS() { document.getElementById('fsLayer').style.display = 'flex'; }
+function exitFS() { document.getElementById('fsLayer').style.display = 'none'; }
+
+function copyVerse() {
+    const text = document.getElementById('textOutput').innerText + " - " + document.getElementById('refOutput').innerText;
+    navigator.clipboard.writeText(text);
+    alert("Verse Secured to Clipboard");
+}
+
+function startVoice() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SpeechRecognition) return;
+    const rec = new SpeechRecognition();
+    rec.onresult = (e) => {
+        const t = e.results[0][0].transcript;
+        document.getElementById('vInput').value = t;
+        fetchVerse(t);
+    };
+    rec.start();
+}
+</script>
+</body>
+</html>
+
