@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sovereign Sermon Architect | BOC Intl</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+:root { --gold: linear-gradient(90deg, #d4af37, #f7ef8a, #d4af37); --accent-blue: #1f80ff; --bg-black: #0a0a0a; --panel-bg: #141414; --input-bg: #1a1a1a; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { background: var(--bg-black); color: #fff; padding: 20px; min-height: 100vh; }
+.architect-container { max-width: 900px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 40px; }
+.header h1 { font-family: 'Playfair Display', serif; font-size: 36px; background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+.header p { font-size: 10px; letter-spacing: 4px; color: #666; text-transform: uppercase; margin-top: 5px; }
+.main-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+@media (max-width: 850px) { .main-grid { grid-template-columns: 1fr; } }
+.search-panel { background: var(--panel-bg); padding: 25px; border-radius: 20px; border: 1px solid #222; height: fit-content; position: sticky; top: 20px; }
+h3 { font-size: 14px; color: var(--accent-blue); margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; }
+input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid #333; padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 15px; font-size: 14px; }
+.btn-primary { width: 100%; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
+.btn-secondary { width: 100%; background: transparent; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 12px; cursor: pointer; font-size: 13px; }
+.sermon-canvas { background: var(--panel-bg); padding: 40px; border-radius: 25px; border: 1px solid #222; min-height: 600px; }
+.sermon-title-input { background: transparent; border: none; border-bottom: 2px solid #333; font-family: 'Playfair Display', serif; font-size: 32px; padding: 10px 0; margin-bottom: 30px; border-radius: 0; width: 100%; color: white; }
+.verse-block { background: #1d1d1d; padding: 25px; border-radius: 15px; margin-bottom: 25px; border-left: 4px solid var(--accent-blue); position: relative; animation: fadeIn 0.4s ease; }
+.verse-ref { color: var(--accent-blue); font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.verse-text { font-family: 'Playfair Display', serif; font-size: 18px; color: #eee; margin-bottom: 15px; font-style: italic; }
+.notes-area { margin-top: 10px; background: #000; border: 1px solid #333; min-height: 80px; }
+.remove-btn { position: absolute; top: 15px; right: 15px; color: #555; background: none; border: none; cursor: pointer; font-size: 12px; }
+footer { text-align: center; margin-top: 60px; padding: 40px 0; border-top: 1px solid #222; font-size: 11px; color: #444; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media print { .search-panel, .remove-btn, footer { display: none; } }
+</style>
+</head>
+<body>
+<div class="architect-container">
+    <div class="header">
+        <h1>Sermon Architect</h1>
+        <p>Sovereign Theological Intelligence Workspace</p>
+    </div>
+    <div class="main-grid">
+        <div class="search-panel">
+            <h3>Scripture Selection</h3>
+            <input id="refIn" placeholder="Enter Reference (e.g. Amos 3:3)">
+            <select id="verIn">
+                <option value="kjv">KJV (King James)</option>
+                <option value="web">WEB (World English)</option>
+            </select>
+            <button class="btn-primary" onclick="fetchForSermon()">⚡ Add to Outline</button>
+            <div id="statusMsg" style="font-size: 11px; text-align: center; color: var(--accent-blue); margin-top: 10px;"></div>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+            <h3>Workspace Actions</h3>
+            <button class="btn-secondary" style="margin-bottom: 10px;" onclick="window.print()">🖨️ Export Sermon (PDF)</button>
+            <button class="btn-secondary" onclick="clearAll()">🗑️ Reset Canvas</button>
+            <button class="btn-secondary" onclick="window.location.href='sovereign.html'" style="margin-top: 20px; border-color: var(--accent-blue);">🔙 Back to Sovereign Intelligence</button>
+        </div>
+        <div class="sermon-canvas">
+            <input class="sermon-title-input" id="sTitle" placeholder="Untitled Sermon Message...">
+            <div id="sermonFlow">
+                <p id="emptyHint" style="color: #444; text-align: center; margin-top: 100px; font-style: italic;">No scriptures added yet.</p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        © 2026 BODY OF CHRIST INTL | SOVEREIGN JURISDICTION<br>
+        <span style="color:var(--accent-blue); font-style: italic; letter-spacing: 1px;">Architect: Kyrie Chirombedzi</span>
+    </footer>
+</div>
+<script>
+let pointCount = 0;
+async function fetchForSermon() {
+    const ref = document.getElementById('refIn').value;
+    const version = document.getElementById('verIn').value;
+    if(!ref) return;
+    try {
+        const res = await fetch(`https://bible-api.com/${encodeURIComponent(ref)}?translation=${version}`);
+        const data = await res.json();
+        if(data.text) {
+            pointCount++;
+            document.getElementById('emptyHint').style.display = 'none';
+            const block = document.createElement('div');
+            block.className = 'verse-block';
+            block.innerHTML = `<button class="remove-btn" onclick="this.parentElement.remove()">REMOVE</button><div class="verse-ref">POINT ${pointCount} | ${data.reference}</div><div class="verse-text">"${data.text.trim()}"</div><textarea class="notes-area" placeholder="Write your revelation notes..."></textarea>`;
+            document.getElementById('sermonFlow').appendChild(block);
+            document.getElementById('refIn').value = "";
+        }
+    } catch(e) {}
+}
+function clearAll() { if(confirm("Clear canvas?")) { location.reload(); } }
+</script>
+</body>
+</html>
+
