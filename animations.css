@@ -1,0 +1,77 @@
+/* SOVEREIGN MOTION PACK 2026 */
+
+/* 1. Subtle Background Pulse */
+body {
+    animation: backgroundPulse 15s infinite alternate ease-in-out;
+}
+
+@keyframes backgroundPulse {
+    0% { background-color: #050505; }
+    100% { background-color: #121212; }
+}
+
+/* 2. Floating Hover for Cards */
+.display-card, .verse-block, .panel, .search-panel {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+
+.display-card:hover, .verse-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(31, 128, 255, 0.15); /* Faint blue glow */
+}
+
+/* 3. The "Reveal" Shine Effect for Gold Buttons */
+.reveal-btn, .btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.reveal-btn::after, .btn-primary::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: rotate(30deg);
+    transition: none;
+    animation: goldShine 4s infinite;
+}
+
+@keyframes goldShine {
+    0% { left: -60%; }
+    20% { left: 120%; }
+    100% { left: 120%; }
+}
+
+/* 4. Text Reveal for Verses */
+#textOutput, .verse-text {
+    animation: textBlurIn 0.8s ease-out forwards;
+}
+
+@keyframes textBlurIn {
+    0% { filter: blur(10px); opacity: 0; transform: scale(0.95); }
+    100% { filter: blur(0); opacity: 1; transform: scale(1); }
+}
+
+/* 5. Smooth Entry for Insight Box */
+.insight-box, .insight-card {
+    animation: slideUpFade 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 6. Glowing Border for Inputs on Focus */
+input:focus {
+    animation: borderGlow 1.5s infinite alternate;
+}
+
+@keyframes borderGlow {
+    from { border-color: #222; box-shadow: 0 0 5px rgba(255,255,255,0); }
+    to { border-color: var(--accent-blue); box-shadow: 0 0 10px rgba(31, 128, 255, 0.3); }
+}
+
