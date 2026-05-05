@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AltarFlow Elite | Pro Scripture Suite</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary: #1f80ff;
+  --accent: #ffd700;
+  --bg: #0a0a0c;
+  --glass: rgba(255, 255, 255, 0.08);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+
+body{
+  background: radial-gradient(circle at top, #1a1a2e, #000);
+  color:#fff;
+  min-height: 100vh;
+}
+
+.container{ max-width:700px; margin:auto; padding:20px; padding-bottom: 80px; }
+
+h1{ text-align:center; font-weight: 700; letter-spacing: -1px; margin-bottom: 5px; }
+.subtitle { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-bottom: 25px; }
+
+.card{
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.inputRow{ display:flex; gap:10px; margin-bottom: 15px; }
+
+input, select{
+  background: rgba(0,0,0,0.3);
+  color: white;
+  padding:14px;
+  border-radius:12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  outline:none;
+}
+input { flex: 2; }
+select { flex: 0.5; cursor: pointer; }
+
+.actions{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+button{
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background: var(--glass);
+  color:white;
+  font-weight: 500;
+  cursor:pointer;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+button.primary { background: linear-gradient(135deg, var(--primary), #004cff); }
+button:hover{ transform: translateY(-3px); background: rgba(255,255,255,0.15); }
+
+/* VERSE DISPLAY */
+#verseDisplay{
+  margin-top: 20px;
+  min-height: 100px;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  line-height: 1.5;
+  opacity: 0;
+  transition: .4s ease;
+}
+
+.show { opacity: 1 !important; }
+
+/* LOWER THIRD MODE */
+.lower-third {
+  position: fixed;
+  bottom: 40px;
+  left: 5%;
+  right: 5%;
+  background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
+  border-left: 6px solid var(--primary);
+  padding: 20px;
+  z-index: 1000;
+  animation: slideIn 0.5s ease;
+}
+
+/* FULLSCREEN OVERLAY */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: #000;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  z-index: 2000; text-align: center; padding: 40px;
+}
+
+.list-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.list-container button { font-size: 12px; padding: 6px 12px; border-radius: 20px; }
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.credits { font-size: 10px; font-style: italic; margin-top: 5px; }
+
+@keyframes slideIn { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>AltarFlow <span style="color:var(--primary)">Elite</span></h1>
+  <p class="subtitle">Dynamic Scripture Projection Engine</p>
+
+  <div class="card">
+    <div class="inputRow">
+      <input id="verseInput" placeholder="Enter verse or keywords...">
+      <select id="version">
+        <option value="kjv">KJV</option>
+        <option value="web">WEB</option>
+        <option value="bbe">BBE</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="primary" onclick="getVerse()">Display</button>
+      <button onclick="startVoice()">🎤 Listen</button>
+      <button onclick="toggleLowerThird()">📺 Lower Third</button>
+      <button onclick="copyVerse()">📋 Copy</button>
+      <button onclick="addFav()">⭐ Favorite</button>
+      <button onclick="toggleFS()">🖼 Fullscreen</button>
+    </div>
+
+    <div id="verseDisplay">Seek and ye shall find...</div>
+  </div>
+
+  <div class="card">
+    <h3>Quick Access</h3>
+    <div id="favorites" class="list-container"></div>
+    <hr style="margin:15px 0; opacity:0.1">
+    <h3>Recent</h3>
+    <div id="history" class="list-container"></div>
+  </div>
+
+  <footer>
+    &copy; 2024 Made by Body of Christ Intl<br>
+    <div class="credits">Kyrie Chirombedzi</div>
+  </footer>
+</div>
+
+<script>
+let currentText = "";
+let cache = JSON.parse(localStorage.getItem("cache")) || {};
+let history = JSON.parse(localStorage.getItem("history")) || [];
+let favs = JSON.parse(localStorage.getItem("favs")) || [];
+
+async function getVerse(q) {
+  q = q || document.getElementById("verseInput").value;
+  let version = document.getElementById("version").value;
+  if(!q) return;
+
+  const display = document.getElementById("verseDisplay");
+  display.classList.remove("show");
+
+  try {
+    const res = await fetch(`https://bible-api.com/${q}?translation=${version}`);
+    const data = await res.json();
+    
+    if(data.text) {
+      currentText = `"${data.text.trim()}"\n\n— ${data.reference} (${version.toUpperCase()})`;
+      renderDisplay(currentText);
+      addHistory(data.reference);
+    } else {
+      // Fallback to search
+      const searchRes = await fetch(`https://bible-api.com/search?q=${encodeURIComponent(q)}`);
+      const searchData = await searchRes.json();
+      if(searchData.verses.length > 0) {
+        let v = searchData.verses[0];
+        currentText = `"${v.text.trim()}"\n\n— ${v.book_name} ${v.chapter}:${v.verse}`;
+        renderDisplay(currentText);
+      }
+    }
+  } catch (e) {
+    renderDisplay("Verse not found. Please check reference.");
+  }
+}
+
+function renderDisplay(text) {
+  const display = document.getElementById("verseDisplay");
+  display.innerText = text;
+  display.classList.add("show");
+  
+  // If lower third is active, update it
+  const lt = document.getElementById("lt-overlay");
+  if(lt) lt.innerText = text;
+}
+
+function toggleLowerThird() {
+  let lt = document.getElementById("lt-overlay");
+  if(lt) {
+    lt.remove();
+  } else {
+    lt = document.createElement("div");
+    lt.id = "lt-overlay";
+    lt.className = "lower-third";
+    lt.innerText = currentText || "Waiting for verse...";
+    document.body.appendChild(lt);
+  }
+}
+
+function toggleFS() {
+  let fs = document.getElementById("fs-overlay");
+  if(fs) {
+    fs.remove();
+  } else {
+    fs = document.createElement("div");
+    fs.id = "fs-overlay";
+    fs.className = "fullscreen-overlay";
+    fs.innerHTML = `<div style="font-size:3rem; font-family:'Playfair Display'">${currentText}</div>
+                    <button onclick="this.parentElement.remove()" style="position:absolute; top:20px; right:20px;">✕ Close</button>`;
+    document.body.appendChild(fs);
+  }
+}
+
+function copyVerse() {
+  if(!currentText) return;
+  navigator.clipboard.writeText(currentText);
+  alert("Copied to clipboard!");
+}
+
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition) return alert("Speech not supported");
+  
+  let rec = new SpeechRecognition();
+  rec.onresult = (e) => {
+    let t = e.results[0][0].transcript;
+    document.getElementById("verseInput").value = t;
+    getVerse(t);
+  };
+  rec.start();
+}
+
+function addHistory(ref) {
+  if(!history.includes(ref)) {
+    history.unshift(ref);
+    history = history.slice(0, 8);
+    localStorage.setItem("history", JSON.stringify(history));
+    renderLists();
+  }
+}
+
+function addFav() {
+  let ref = document.getElementById("verseInput").value;
+  if(ref && !favs.includes(ref)) {
+    favs.push(ref);
+    localStorage.setItem("favs", JSON.stringify(favs));
+    renderLists();
+  }
+}
+
+function renderLists() {
+  const hDiv = document.getElementById("history");
+  const fDiv = document.getElementById("favorites");
+  hDiv.innerHTML = ""; fDiv.innerHTML = "";
+  
+  history.forEach(v => {
+    let b = document.createElement("button");
+    b.innerText = v;
+    b.onclick = () => getVerse(v);
+    hDiv.appendChild(b);
+  });
+
+  favs.forEach(v => {
+    let b = document.createElement("button");
+    b.innerText = "⭐ " + v;
+    b.onclick = () => getVerse(v);
+    fDiv.appendChild(b);
+  });
+}
+
+renderLists();
+</script>
+
+</body>
+</html>
+
